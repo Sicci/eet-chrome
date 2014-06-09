@@ -1,0 +1,142 @@
+/* icons */
+.iconCsgo {  background: url("../images/gameIcons16.png") 0;        width: 16px; height: 16px;}
+.iconDota2 { background: url("../images/gameIcons16.png") -16px;    width: 16px; height: 16px;}
+.iconLol {   background: url("../images/gameIcons16.png") -32px;    width: 16px; height: 16px;}
+.iconSc2 {   background: url("../images/gameIcons16.png") -48px;    width: 16px; height: 16px;}
+.iconHs {    background: url("../images/gameIcons16.png") -64px;    width: 16px; height: 16px;}
+.iconWc3 {   background: url("../images/gameIcons16.png") -80px;    width: 16px; height: 16px;}
+.iconHltv {  background: url("../images/hltv.png"); display: block; width:35px; height: 20px;}
+
+
+.submenu-refresh {float:right !important;}
+
+.centerText {text-align: center;}
+
+.hide {display:none !important;}
+
+.left {float:left !important;}
+
+.right {float:right !important;}
+
+.opaque {opacity: 0;}
+
+span.result {float:right;}
+
+td.fromNow {
+    width:72px;
+    text-align: center;
+}
+
+.reminder {
+    opacity: 0;
+    vertical-align: middle
+}
+
+.matchList .eventSoon .reminder {opacity: 1 !important;}
+
+.matchList .eventDone {display:none !important;}
+.finishedList .eventLive {display:none !important;}
+.finishedList .eventSoon {display: none !important;}
+
+.badge {
+    margin-right:4px;
+    padding: 3px 5px !important;
+}
+
+.spoilerAlert a {color: #f9a51b !important;}
+
+#tbody_settings td {
+    vertical-align: middle;
+}
+
+body {
+    font-size:13px !important;
+}
+
+.gif {
+    background:url("../images/ajax-loader.gif");
+    display:block;
+    width: 16px;
+    height: 11px;
+    margin: 10px auto;
+    margin-bottom:10px;
+}
+
+/*========================= from dota match ticker  ========================*/
+
+/*OVERWRITTING*/
+.nav {
+    margin-bottom:-1px !important;
+}
+.accordion {
+    margin-bottom: 0px !important;
+}
+.accordion-heading .accordion-toggle {
+    padding: 6px 15px !important;
+    text-decoration:none !important;
+}
+.accordion-inner {
+    padding: 0px !important;
+    border-top: none !important;
+}
+.table {
+    margin-bottom: 0px !important;
+}
+.table th, .table td {
+    line-height: 18px !important;
+}
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+    background-color: antiqueWhite;
+}
+.tooltip-inner {
+    max-width: 240px !important;
+    background-color: #000000 !important;
+}
+
+.sub-tabs-top {
+    border-top: 0 !important;
+    margin-top: 1px !important;
+}
+
+.sub-tabs-left {
+    border-left: 0 !important;
+}
+
+.menutab {
+    min-width: 0 !important;
+}
+
+.tabs-left {
+    width: 50px;
+    float: left;
+    margin-right: -3px;
+}
+
+.alignborder {
+    border-left: 1px solid #ddd;
+}
+
+.outpostimg {
+    float: left;
+    margin-right: 5px;
+}
+
+.outpostimg:hover {
+    opacity: 0.8;
+}
+
+.ti2img {
+    display: block;
+    width: 264px;
+    height: 114px;
+    background-image: url('../img/international-button.png');
+    margin: 3px auto;
+}
+
+.ti2img:hover {
+    background-position: bottom;
+}
+
+.outpostdesc {
+    padding:0 5px;
+}

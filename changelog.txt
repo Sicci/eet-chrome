@@ -1,0 +1,9 @@
+v.1.1
+======
+built for marcus
+
+v.1.2
+======
+- use php-scripts to scrape hltv
+- added winner / loser visuals to result view
+- added ajox loader and failure message
