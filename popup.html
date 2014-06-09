@@ -91,21 +91,31 @@
           <ul class="nav nav-tabs">
               <li class="active"><a id="sub_nav_csgo_upc" class="submenu sub-tabs-top ph-tabstop ph-tableft" data-subtab="upc" href="#sub_csgo_upc" data-toggle="tab"><span id="badge_csgo_upc" class="badge"></span>Upcoming Matches &nbsp;</span></a></li>
               <li><a id="sub_nav_csgo_res" class="submenu sub-tabs-top ph-tabstop ph-tableft" data-subtab="res" href="#sub_csgo_res" data-toggle="tab"><span id="badge_csgo_results" class="badge"></span>Recent Results</a></li>
-              <li class="submenu-refresh"><a href="#"><span class="glyphicon glyphicon-refresh"></span></a> </li>
+              <li><a id="sub_nav_csgo_vods" class="submenu sub-tabs-top ph-tabstop ph-tableft" href="#sub_csgo_vods" data-toggle="tab">VODs</a></li>
+              <!--<li class="submenu-refresh"><a href="#"><span class="glyphicon glyphicon-refresh"></span></a> </li>-->
           </ul>
           <div class="tab-content">
+
               <div class="tab-pane tab-pane-upc active" id="sub_csgo_upc">
                   <table id="csgo_matchList" class="table table-hover table-condensed matchList">
                       <tbody class="listload" id="tbody_csgo_upcMatches">
-                        <!-- insert upcoming matches here -->
                             <tr class="gif"></tr>
                       </tbody>
                   </table>
               </div>
+
               <div class="tab-pane tab-pane-res" id="sub_csgo_res">
                   <table id="csgo_finishedList" class="table table-hover table-condensed finishedList">
                       <tbody class="listload" id="tbody_csgo_results">
                             <tr class="gif"></tr>
+                      </tbody>
+                  </table>
+              </div>
+
+              <div class="tab-pane tab-pane-vods" id="sub_csgo_vods">
+                  <table id="csgo_vodList" class="table table-hover table-condensed vodList">
+                      <tbody class="listload" id="tbody_csgo_vods">
+                      <tr class="gif"></tr>
                       </tbody>
                   </table>
               </div>

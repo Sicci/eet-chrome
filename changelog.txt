@@ -7,3 +7,7 @@ v.1.2
 - use php-scripts to scrape hltv
 - added winner / loser visuals to result view
 - added ajox loader and failure message
+
+v.1.3
+======
+- csgo vods added from esl_tv

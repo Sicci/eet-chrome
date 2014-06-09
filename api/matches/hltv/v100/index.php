@@ -14,24 +14,33 @@
 			$i++;
 			$gameType = "csgo";
 			$time = $match->find('.badge', 0)->plaintext;
-			$timeFromNow = $match->find('.descriptiontext', 0)->plaintext;
-			$isLive = $match->find('[class*="pull-right label-success"]', 0); 
+			
+			$isLive = false;
+			
+			if(gettype($match->find('small[class*="descriptiontext"]', 0)) == "NULL") {
+				$isLive = true;
+			}
+			else {
+				$timeFromNow = $match->find('small', 0)->plaintext;
+			}
+			
+			
 			$url = "http://www.hltv.org{$match->find('a', 0)->href}"; 
 			$team1name = $match->find('a div',0)->plaintext;
 			$team1flag = $match->find('a img',0)->src;
 			$team2name = $match->find('a div',1)->plaintext;
 			$team2flag = $match->find('a img',1)->src;
 			$coverage = $match->find('a div',2)->plaintext;
-			$map = $match->find('a div',3)->plaintext;
+			$map = $match->find('a div',3)->plaintext;			
 			
 			if ($isLive) { //game is live
 				$output["live"][] = "<tr data-toggle='tooltip' title='{$coverage}<br>{$map}' id='{$gameType}_upc_{$i}' class='eetrow eventLive'><td class='live' data-container='body'><strong>Live</strong></td><td><img src='{$team1flag}' />{$team1name}</td><td>vs.</td><td><img src='{$team2flag}' />{$team2name}</td></tr>";
 			} else { //game is upcoming
-				$output["soon"][] = "<tr data-toggle='tooltip' title='{$coverage}<br>{$map}' id='{$gameType}_upc_{$i}' class='eetrow eventSoon'><td class='fromNow'>{$timeFromNow}</td><td><a href='#'><span class='reminder glyphicon glyphicon-bell'></span></a></td><td><img src='{$team1flag}' />{$team1name}</td><td>vs.</td><td><img src='{$team2flag}' />{$team2name}</td></tr>";
+				$output["soon"][] = "<tr data-toggle='tooltip' title='{$coverage}<br>{$map}' id='{$gameType}_upc_{$i}' class='eetrow eventSoon'><td>{$timeFromNow}</td><td><a href='#'><span class='reminder glyphicon glyphicon-bell'></span></a></td><td><img src='{$team1flag}' />{$team1name}</td><td>vs.</td><td><img src='{$team2flag}' />{$team2name}</td></tr>";
 			}
 		}
 	}
-	
+
 	$j = 0;
 	foreach($resultList->find('div[class*="row col-lg-12"] div[class="panel panel-default"]') as $matches) {
 		$date = $matches->find('.panel-title',0)->plaintext;
@@ -55,12 +64,12 @@
 			} else {
                 $result = "<td class='loserTeam'><img src='{$team1flag}' />{$team1name}</td><td>vs.</td><td class='winnerTeam'><img src='{$team2flag}' />{$team2name}</td>";
 			}
-				
+
 			$output["done"][] = "<tr data-toggle='tooltip' title='{$date}<br>{$coverage}<br>{$map}' id='{$gameType}_res_{$j}' class='eetrow eventDone'><td><span class='spoilerAlert'><a class='spoiler' href='#'>Score</a><span class='result hide'>{$team1result}: {$team2result}</span></span></td>{$result}<td><a class=myHref href='{$url}'><span class='iconHltv'></span></a></td></tr>";
 		}
-		
+
 	}
-	
+
 	//$output = array_merge($output, $finishedList);
 	$str = trim(json_encode($output));
 	$filestr    = "api.json";

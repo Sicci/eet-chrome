@@ -6,6 +6,7 @@
 .iconHs {    background: url("../images/gameIcons16.png") -64px;    width: 16px; height: 16px;}
 .iconWc3 {   background: url("../images/gameIcons16.png") -80px;    width: 16px; height: 16px;}
 .iconHltv {  background: url("../images/hltv.png"); display: block; width:35px; height: 20px;}
+.iconEsltv {  background: url("../images/esltv.png"); display: block; width:35px; height: 20px;}
 
 
 .submenu-refresh {float:right !important;}
