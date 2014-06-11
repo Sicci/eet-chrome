@@ -8,6 +8,12 @@
 .iconHltv {  background: url("../images/hltv.png"); display: block; width:35px; height: 20px;}
 .iconEsltv {  background: url("../images/esltv.png"); display: block; width:35px; height: 20px;}
 
+.flag {
+    width: 14px;
+    height: 9px;
+}
+
+.winner {font-weight: bold;}
 
 .submenu-refresh {float:right !important;}
 
@@ -21,11 +27,25 @@
 
 .opaque {opacity: 0;}
 
-span.result {float:right;}
+.eventDone td:first-child {
+    width: 50px;
+}
+
+span.result {
+    float:right;
+}
 
 td.fromNow {
     width:72px;
     text-align: center;
+}
+
+td.airtime {
+    float:right;
+}
+
+td.vod_title {
+    text-align: right;
 }
 
 .reminder {

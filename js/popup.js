@@ -37,6 +37,13 @@ var eet = {
         },
         readmore: []
     },
+    templates: {
+        no_matches: "<tr class='eetrow centerText'><td><span class='glyphicon glyphicon-warning-sign left'></span> no matches found<span class='glyphicon glyphicon-warning-sign right'></span></td></tr>",
+        csgo_live: "<tr data-html='true' data-toggle='tooltip' title='#{coverage}<br>#{map}' id='#{gameType}_upc_#{id}' class='eetrow eventLive'><td class='live' data-container='body'><strong>Live</strong></td><td></td><td><img class='flag' src='#{team1flag}' />#{team1name}</td><td>vs.</td><td><img class='flag' src='#{team2flag}' />#{team2name}</td></tr>",
+        csgo_soon: "<tr data-html='true' data-toggle='tooltip' title='#{coverage}<br>#{map}' id='#{gameType}_upc_#{id}' class='eetrow eventSoon'><td class='fromNow'>#{timeFromNow}</td><td><a href='#'><span class='reminder glyphicon glyphicon-bell'></span></a></td><td><img class='flag' src='#{team1flag}' />#{team1name}</td><td>vs.</td><td><img class='flag' src='#{team2flag}' />#{team2name}</td></tr>",
+        csgo_done: "<tr data-html='true' data-toggle='tooltip' title='#{date}<br>#{coverage}<br>#{map}' id='#{gameType}_res_#{id}' class='eetrow eventDone'><td><span class='spoilerAlert'><a class='spoiler' href='#'>Score</a><span class='result hide'>#{team1result}: #{team2result}</span></span></td><td class='team1'><img class='flag' src='#{team1flag}' />#{team1name}</td><td>vs.</td><td class='team2'><img class='flag' src='#{team2flag}' />#{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconHltv'></span></a></td></tr>",
+        csgo_vods_esltv: "<tr data-html='true' data-toggle='tooltip' title='#{coverage}' id='#{gameType}_vods_#{organisation}_#{id}' class='eetrow vod' ><td class='airtime'>#{airtime}</td><td class='vod_title'>#{title}</td><td class='vod_length'>#{videolength}</td><td><a class='myHref' href='#{videourl}'><span class='iconEsltv'></span></a></td></tr>"
+    },
     init: function () {
         defineDefaults();
         //getEvents()
@@ -48,6 +55,9 @@ var eet = {
 var menuPos = eet.settings.menuPos;
 var isSpoilerOn = eet.settings.isSpoilerOn;
 var isTooltipOn = eet.settings.isTooltipOn;
+
+//helper variables
+var csgo_winner = [];
 
 /*var setMenuPosition = function(menuPos) {
  var $tab = $('.tabbable');
@@ -106,7 +116,7 @@ var defineDefaults = function () {
     } else {
         $('#tooltipLabelFalse').addClass("active");
     }
-    setTooltipMode(isTooltipOn); //not necessary, there are no tooltips at the beginning?
+    //setTooltipMode(isTooltipOn); //not necessary, there are no tooltips at the beginning?
 }
 
 $(document).on('change', 'input:radio[class^="spoilersettings"]', function (event) {
@@ -131,14 +141,16 @@ var setTooltipMode = function (isTooltip) {
 var setResultsSpoiler = function (isSpoilerOn) {
     if (isSpoilerOn) {
         $(".spoiler").addClass("hide");
-        $(".winnerTeam").addClass("alert-success");
-        $(".loserTeam").addClass("alert-danger");
+        //$(".winnerTeam").addClass("alert-success");
+        $(".winnerTeam").addClass("winner");
+        //$(".loserTeam").addClass("alert-danger");
         $(".result").removeClass("hide");
     }
     else {
         $(".spoiler").removeClass("hide");
-        $(".winnerTeam").removeClass("alert-success");
-        $(".loserTeam").removeClass("alert-danger");
+        $(".winnerTeam").removeClass("winner");
+        //$(".winnerTeam").removeClass("alert-success");
+        //$(".loserTeam").removeClass("alert-danger");
         $(".result").addClass("hide");
     }
 }
@@ -159,7 +171,7 @@ function buildHTML(i, match) {
     var htmlListObject = '<tr id="' + i + '" class="eetrow ';
 
     if (match.time != "") {
-        htmlListObject += 'eventSoon" href="#">' + // rel="tooltip" data-original-title="
+        htmlListObject += 'eventSoon" href="#">' +
             '<td>' + match.time + '</td></td>';
     }
     else if (match.live != "") {
@@ -280,32 +292,59 @@ function getEvents() {
     });
 }
 
-
+/*todo:if results == null*/
 var loadHLTVMatches = $.ajax({
-    url: "http://api.lotusarts.de/matches/hltv/v100/api.json",
+    url: "http://josef.virtual-artz.de/api/matches/hltv/v100/api.json",
     success: function (data) {
-        var upc_matches, res_matches;
-        $.each(data, function (key, value) {
+        var upc_matches, res_matches, foo;
+        csgo_winner = [];
+        $.each(data, function (key, match) {
             if (key === "done") {
-                res_matches += value;
+                $.each(match, function (i, gameInfo) {
+                    if (gameInfo["winnerTeam"] !== gameInfo["loserTeam"]) {
+                        foo = {id:"csgo_res_"+gameInfo["id"], class:gameInfo["winnerTeam"]};
+                        csgo_winner.push(foo);
+                    }
+                    gameInfo["team1name"] = trimAfter(gameInfo["team1name"],13);
+                    res_matches += $.tmpl(eet.templates.csgo_done, gameInfo);
+                });
             }
             else {
-                upc_matches += value;
+                $.each(match, function (i, gameInfo) {
+                    if (gameInfo["isLive"]) {
+                        console.log("game is live");
+                        upc_matches += $.tmpl(eet.templates.csgo_live, gameInfo);
+                    }
+                    else {
+                        console.log("game upcoming but not live");
+                        console.log(gameInfo);
+                        upc_matches += $.tmpl(eet.templates.csgo_soon, gameInfo);
+                    }
+                });
             }
         });
-
         $('#tbody_csgo_upcMatches').html(upc_matches);
         $('#tbody_csgo_results').html(res_matches);
+
+        $.each(csgo_winner, function(i, winner){
+           $("#"+winner.id+" ."+winner.class).addClass("winnerTeam");
+        });
     }
 });
 
 var loadCsgoVods = $.ajax({
-   url: "http://api.lotusarts.de/vods/csgo/v100/api.json",
+   url: "http://josef.virtual-artz.de/api/vods/csgo/v100/api.json",
     success: function (data) {
         var esltv;
         $.each(data, function(key, value) {
-           if (key == "esltv") {
-               esltv += value;
+           if (key == "esltv" && value !== null) {
+               $.each(value, function(i, gameInfo) {
+                   esltv += $.tmpl(eet.templates.csgo_vods_esltv, gameInfo);
+               });
+
+           }
+            else {
+               esltv = eet.templates.no_matches;
            }
         });
         $('#tbody_csgo_vods').html(esltv);
@@ -315,15 +354,14 @@ var loadCsgoVods = $.ajax({
 document.addEventListener('DOMContentLoaded', function () {
     var cTime = new Date($.now());
     $("#currentTime").html(cTime);
-    //var bg = chrome.extension.getBackgroundPage();
-    //setInterval(function() {console.log(bg.count);}, 2000);
-
 
     eet.init();
     getEvents();
-    //getHLTVMatches();
 
-    $.when(loadHLTVMatches).done(function () {
+    $.when(loadHLTVMatches, loadCsgoVods).done(function () {
+        console.log("loading finished");
+        setResultsSpoiler();
+
         if (!isTooltipOn) {
             $('[data-toggle="tooltip"]').tooltip('disable');
         }
