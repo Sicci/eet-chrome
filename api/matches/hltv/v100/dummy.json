@@ -1,0 +1,13 @@
+{
+    "live":[
+        {"gameType":"csgo","id":"1ddc171a","time":"15:00 ","isLive":true,"timeFromNow":null,"url":"http:\/\/www.hltv.org\/match\/2291587-nip-berzerk-dreamhack-summer-2014","team1name":" NiP","team1flag":"http:\/\/static.hltv.org\/images\/flag\/se.gif","team2name":" Berzerk","team2flag":"http:\/\/static.hltv.org\/images\/flag\/de.gif","coverage":"DreamHack Summer 2014","map":"de_inferno"},
+        {"gameType":"csgo","id":"f4011a72","time":"15:00 ","isLive":true,"timeFromNow":null,"url":"http:\/\/www.hltv.org\/match\/2291592-epsilon-publiclirse-dreamhack-summer-2014","team1name":" Epsilon","team1flag":"http:\/\/static.hltv.org\/images\/flag\/fr.gif","team2name":" Publiclir.se","team2flag":"http:\/\/static.hltv.org\/images\/flag\/se.gif","coverage":"DreamHack Summer 2014","map":"de_inferno"}
+    ],
+    "soon":[
+        {"gameType":"csgo","id":"e7841dd0","time":"20:00 ","timestamp":1402768773,"isLive":false,"timeFromNow":"4h, 57m","url":"http:\/\/www.hltv.org\/match\/2291589-virtuspro-london-conspiracy-dreamhack-summer-2014","team1name":" Virtus.pro","team1flag":"http:\/\/static.hltv.org\/images\/flag\/pl.gif","team2name":" London Conspiracy","team2flag":"http:\/\/static.hltv.org\/images\/flag\/no.gif","coverage":"DreamHack Summer 2014","map":"TBA"},
+        {"gameType":"csgo","id":"eaac162b","time":"20:00 ","timestamp":1402768773,"isLive":false,"timeFromNow":"4h, 57m","url":"http:\/\/www.hltv.org\/match\/2291590-fnatic-sk-dreamhack-summer-2014","team1name":" fnatic","team1flag":"http:\/\/static.hltv.org\/images\/flag\/se.gif","team2name":" SK","team2flag":"http:\/\/static.hltv.org\/images\/flag\/se.gif","coverage":"DreamHack Summer 2014","map":"TBA"}
+    ],
+    "done":[
+        {"gameType":"csgo","id":"b26e108a","date":"11-06-2014","url":"http:\/\/www.hltv.org\/?pageid=304&matchid=25395","team1name":" ALSEN","team1flag":"http:\/\/static.hltv.org\/images\/flag\/pl.gif","team2name":" noMERCY","team2flag":"http:\/\/static.hltv.org\/images\/flag\/pl.gif","coverage":"ESL Pro Series Poland Season 8","map":"nuke","team1result":"16 ","team2result":"9 ","winnerTeam":"team1","loserTeam":"team2"}
+    ]
+}

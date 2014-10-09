@@ -15,22 +15,29 @@ $.ajaxSetup({
     }
 });
 
-
 var eet = {
     config: {
         email: "siclotus@gmail.com",
-        readmoreUrl: "http://www.readmore.de",
-        hltvUrl: {
-            upc: "http://www.hltv.org/?m=yes&pageid=305",
-            res: "http://www.hltv.org/?m=yes&pageid=296"
+        urls: {
+            readmore: "http://www.readmore.de",
+            dota2: "http://www.gosugamers.net/dota2/gosubet",
+            hs: "http://www.gosugamers.net/hearthstone/gosubet",
+            sc2: "http://www.gosugamers.net/starcraft2/gosubet",
+            lol: "http://www.gosugamers.net/lol/gosubet",
+            csgo: {
+                upc:"http://www.hltv.org/?m=yes&pageid=305",
+                results:"http://www.hltv.org/?m=yes&pageid=296"
+            }
         }
     },
     settings: {
         isSpoilerOn: localStorage.isSpoilerOn === "true",
-        isTooltipOn: localStorage.isTooltipOn === "true",
-        menuPos: localStorage.menuPos === "left" ? "left" : "top"
+        isTooltipOn: localStorage.isTooltipOn === "true"
+       // menuPos: localStorage.menuPos === "left" ? "left" : "top"
     },
     matches: {
+        all: {},
+        csgo: {}, //save information for notification
         hltv: {
             upc: [],
             res: []
@@ -38,11 +45,36 @@ var eet = {
         readmore: []
     },
     templates: {
-        no_matches: "<tr class='eetrow centerText'><td><span class='glyphicon glyphicon-warning-sign left'></span> no matches found<span class='glyphicon glyphicon-warning-sign right'></span></td></tr>",
-        csgo_live: "<tr data-html='true' data-toggle='tooltip' title='#{coverage}<br>#{map}' id='#{gameType}_upc_#{id}' class='eetrow eventLive'><td class='live' data-container='body'><strong>Live</strong></td><td></td><td><img class='flag' src='#{team1flag}' />#{team1name}</td><td>vs.</td><td><img class='flag' src='#{team2flag}' />#{team2name}</td></tr>",
-        csgo_soon: "<tr data-html='true' data-toggle='tooltip' title='#{coverage}<br>#{map}' id='#{gameType}_upc_#{id}' class='eetrow eventSoon'><td class='fromNow'>#{timeFromNow}</td><td><a href='#'><span class='reminder glyphicon glyphicon-bell'></span></a></td><td><img class='flag' src='#{team1flag}' />#{team1name}</td><td>vs.</td><td><img class='flag' src='#{team2flag}' />#{team2name}</td></tr>",
-        csgo_done: "<tr data-html='true' data-toggle='tooltip' title='#{date}<br>#{coverage}<br>#{map}' id='#{gameType}_res_#{id}' class='eetrow eventDone'><td><span class='spoilerAlert'><a class='spoiler' href='#'>Score</a><span class='result hide'>#{team1result}: #{team2result}</span></span></td><td class='team1'><img class='flag' src='#{team1flag}' />#{team1name}</td><td>vs.</td><td class='team2'><img class='flag' src='#{team2flag}' />#{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconHltv'></span></a></td></tr>",
-        csgo_vods_esltv: "<tr data-html='true' data-toggle='tooltip' title='#{coverage}' id='#{gameType}_vods_#{organisation}_#{id}' class='eetrow vod' ><td class='airtime'>#{airtime}</td><td class='vod_title'>#{title}</td><td class='vod_length'>#{videolength}</td><td><a class='myHref' href='#{videourl}'><span class='iconEsltv'></span></a></td></tr>"
+        no_matches: "<tr class='eetrow centerText'><td><span class='glyphicon glyphicon-warning-sign left'></span> no #{gameType} matches found<span class='glyphicon glyphicon-warning-sign right'></span></td></tr>",
+        //csgo_live: "<tr data-html='true' data-toggle='tooltip' title='#{coverage}<br>#{map}' id='#{gameType}_upc_#{id}' class='eetrow eventLive'><td class='live' data-container='body'><strong>Live</strong></td><td></td><td><img class='flag' src='#{team1flag}' />#{team1name}</td><td>vs.</td><td><img class='flag' src='#{team2flag}' />#{team2name}</td></tr>",
+        //csgo_soon: "<tr data-html='true' data-toggle='tooltip' title='#{coverage}<br>#{map}' id='#{gameType}_upc_#{id}' class='eetrow eventSoon'><td class='fromNow'>#{timeFromNow}</td><td><a class='notificationHref' data-id='#{id}' href='#'><span class='reminder glyphicon glyphicon-bell'></span></a></td><td><img class='flag' src='#{team1flag}' />#{team1name}</td><td>vs.</td><td><img class='flag' src='#{team2flag}' />#{team2name}</td></tr>",
+        //csgo_done: "<tr data-html='true' data-toggle='tooltip' title='#{date}<br>#{coverage}<br>#{map}' id='#{gameType}_res_#{id}' class='eetrow eventDone'><td><span class='spoilerAlert'><a class='spoiler' href='#'>Score</a><span class='result hide'>#{team1result}: #{team2result}</span></span></td><td class='team1'><img class='flag' src='#{team1flag}' />#{team1name}</td><td>vs.</td><td class='team2'><img class='flag' src='#{team2flag}' />#{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconHltv'></span></a></td></tr>",
+        csgo_vods_esltv: "<tr data-html='true' data-toggle='tooltip' title='#{coverage}' id='#{gameType}_vods_#{organisation}_#{id}' class='eetrow vod' ><td class='airtime'>#{airtime}</td><td class='vod_title'>#{title}</td><td class='vod_length'>#{videolength}</td><td><a class='myHref' href='#{videourl}'><span class='iconEsltv'></span></a></td></tr>",
+        csgo: {
+            live: "<tr id='#{id}' class='eetrow eventLive #{gameType}'><td class='live'><strong>Live</strong></td><td></td><td><img class='flag' src='#{team1flag}' />#{team1name}</td><td>vs.</td><td><img class='flag' src='#{team2flag}' />#{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconHltv'></span></a></td></tr>",
+            soon: "<tr id='#{id}' class='eetrow eventSoon #{gameType}'><td class='fromNow'>#{timeToLive}</td><td><a class='notificationHref' data-id='#{id}' href='#'><span class='reminder glyphicon glyphicon-bell'></span></a></td><td><img class='flag' src='#{team1flag}' />#{team1name}</td><td>vs.</td><td><img class='flag' src='#{team2flag}' />#{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconHltv'></span></a></td></tr>",
+            done: "<tr id='#{id}' class='eetrow eventDone #{gameType}'><td><span class='spoilerAlert'><a class='spoiler' href='#'>Score</a><span class='result hide'>#{team1result}: #{team2result}</span></span></td><td class='team1'><img class='flag' src='#{team1flag}' />#{team1name}</td><td>vs.</td><td class='team2'><img class='flag' src='#{team2flag}' />#{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconHltv'></span></a></td></tr>"
+        },
+        dota2: {
+            live: "<tr id='#{id}' class='eetrow eventLive #{gameType}' ><td class='live'><b>Live</b></td><td></td><td><span class='#{team1flag}'></span> #{team1name}</td><td>vs.</td><td><span class='#{team2flag}'></span> #{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconGosu'></span></a></td></tr></tr>",
+            soon: "<tr id='#{id}' class='eetrow eventSoon #{gameType}' ><td class='gg_date'>#{timeToLive}</td><td><a class='notificationHref' data-id='#{id}' href='#'><span class='reminder glyphicon glyphicon-bell'></span></a></td><td><span class='#{team1flag}'></span> #{team1name}</td><td>vs.</td><td><span class='#{team2flag}'></span> #{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconGosu'></span></a></td></tr></tr>",
+            done: "<tr id='#{id}' class='eetrow eventDone #{gameType}' ><td><span class='spoilerAlert'><a class='spoiler' href='#'>Score</a><span class='result hide'>#{team1result} : #{team2result}</span></span></td><td class='team1'><span class='#{team1flag}'></span> #{team1name}</td><td>vs.</td><td class='team2'><span class='#{team2flag}'></span> #{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconGosu'></span></a></td></tr>"
+        },
+        hs: {
+            live: "<tr id='#{id}' class='eetrow eventLive #{gameType}' ><td class='live'><b>Live</b></td><td></td><td><span class='#{team1flag}'></span> #{team1name}</td><td>vs.</td><td><span class='#{team2flag}'></span> #{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconGosu'></span></a></td></tr></tr>",
+            soon: "<tr id='#{id}' class='eetrow eventSoon #{gameType}' ><td class='gg_date'>#{timeToLive}</td><td><a class='notificationHref' data-id='#{id}' href='#'><span class='reminder glyphicon glyphicon-bell'></span></a></td><td><span class='#{team1flag}'></span> #{team1name}</td><td>vs.</td><td><span class='#{team2flag}'></span> #{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconGosu'></span></a></td></tr></tr>",
+            done: "<tr id='#{id}' class='eetrow eventDone #{gameType}' ><td><span class='spoilerAlert'><a class='spoiler' href='#'>Score</a><span class='result hide'>#{team1result} : #{team2result}</span></span></td><td class='team1'><span class='#{team1flag}'></span> #{team1name}</td><td>vs.</td><td class='team2'><span class='#{team2flag}'></span> #{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconGosu'></span></a></td></tr>"
+        },
+        sc2: {
+            live: "<tr id='#{id}' class='eetrow eventLive #{gameType}' ><td class='live'><b>Live</b></td><td></td><td><span class='#{team1flag}'></span> #{team1name}</td><td>vs.</td><td><span class='#{team2flag}'></span> #{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconGosu'></span></a></td></tr></tr>",
+            soon: "<tr id='#{id}' class='eetrow eventSoon #{gameType}' ><td class='gg_date'>#{timeToLive}</td><td><a class='notificationHref' data-id='#{id}' href='#'><span class='reminder glyphicon glyphicon-bell'></span></a></td><td><span class='#{team1flag}'></span> #{team1name}</td><td>vs.</td><td><span class='#{team2flag}'></span> #{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconGosu'></span></a></td></tr></tr>",
+            done: "<tr id='#{id}' class='eetrow eventDone #{gameType}' ><td><span class='spoilerAlert'><a class='spoiler' href='#'>Score</a><span class='result hide'>#{team1result} : #{team2result}</span></span></td><td class='team1'><span class='#{team1flag}'></span> #{team1name}</td><td>vs.</td><td class='team2'><span class='#{team2flag}'></span> #{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconGosu'></span></a></td></tr>"
+        },
+        lol: {
+            live: "<tr id='#{id}' class='eetrow eventLive #{gameType}' ><td class='live'><b>Live</b></td><td></td><td><span class='#{team1flag}'></span> #{team1name}</td><td>vs.</td><td><span class='#{team2flag}'></span> #{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconGosu'></span></a></td></tr></tr>",
+            soon: "<tr id='#{id}' class='eetrow eventSoon #{gameType}' ><td class='gg_date'>#{timeToLive}</td><td><a class='notificationHref' data-id='#{id}' href='#'><span class='reminder glyphicon glyphicon-bell'></span></a></td><td><span class='#{team1flag}'></span> #{team1name}</td><td>vs.</td><td><span class='#{team2flag}'></span> #{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconGosu'></span></a></td></tr></tr>",
+            done: "<tr id='#{id}' class='eetrow eventDone #{gameType}' ><td><span class='spoilerAlert'><a class='spoiler' href='#'>Score</a><span class='result hide'>#{team1result} : #{team2result}</span></span></td><td class='team1'><span class='#{team1flag}'></span> #{team1name}</td><td>vs.</td><td class='team2'><span class='#{team2flag}'></span> #{team2name}</td><td><a class='myHref' href='#{url}'><span class='iconGosu'></span></a></td></tr>"
+        }
     },
     init: function () {
         defineDefaults();
@@ -52,43 +84,11 @@ var eet = {
 };
 
 //cache settings
-var menuPos = eet.settings.menuPos;
 var isSpoilerOn = eet.settings.isSpoilerOn;
 var isTooltipOn = eet.settings.isTooltipOn;
 
 //helper variables
 var csgo_winner = [];
-
-/*var setMenuPosition = function(menuPos) {
- var $tab = $('.tabbable');
- if (menuPos === "top") {
- $tab.removeClass("tabs-left");
- $('.ph-tableft').removeClass("sub-tabs-left");
- $tab.addClass("tabs-top");
- $('.ph-tabstop').addClass("sub-tabs-top");
- } else {
- $tab.removeClass("tabs-top");
- $('.ph-tabstop').removeClass("sub-tabs-top");
- $tab.addClass("tabs-left");
- $('.ph-tableft').addClass("sub-tabs-left");
- }
- };*/
-/*$('.menu-position').click(function(){
- menuPos = $(this).data('position');
- localStorage.menuPos = menuPos;
- setMenuPosition(menuPos);
- });*/
-
-$('body').on('click', '.menutab', function (e) {
-    var lastTab = $(e.currentTarget).attr('id');
-    localStorage.lastOpenedTab = lastTab;
-    $('#sub_' + lastTab + '_' + localStorage.lastSubTab).tab('show');
-});
-
-$('body').on('click', '.submenu', function (e) {
-    var lastSubTab = $(e.currentTarget).data('subtab');
-    localStorage.lastSubTab = lastSubTab;
-});
 
 var defineDefaults = function () {
     // Last Opened Tab
@@ -119,6 +119,17 @@ var defineDefaults = function () {
     //setTooltipMode(isTooltipOn); //not necessary, there are no tooltips at the beginning?
 }
 
+$('body').on('click', '.menutab', function (e) {
+    var lastTab = $(e.currentTarget).attr('id');
+    localStorage.lastOpenedTab = lastTab;
+    $('#sub_' + lastTab + '_' + localStorage.lastSubTab).tab('show');
+});
+
+$('body').on('click', '.submenu', function (e) {
+    var lastSubTab = $(e.currentTarget).data('subtab');
+    localStorage.lastSubTab = lastSubTab;
+});
+
 $(document).on('change', 'input:radio[class^="spoilersettings"]', function (event) {
     isSpoilerOn = $(this).data('isspoiler');
     localStorage.isSpoilerOn = isSpoilerOn;
@@ -139,6 +150,7 @@ var setTooltipMode = function (isTooltip) {
 }
 
 var setResultsSpoiler = function (isSpoilerOn) {
+    console.log("setResultsSpoiler "+isSpoilerOn);
     if (isSpoilerOn) {
         $(".spoiler").addClass("hide");
         //$(".winnerTeam").addClass("alert-success");
@@ -155,86 +167,327 @@ var setResultsSpoiler = function (isSpoilerOn) {
     }
 }
 
-
-var jsonMatches = {matches: []};
-
-/**
- * show results and remove spoiler
- */
+//show results and remove spoiler
 $("body").on("click", ".eetrow .spoilerAlert", function () {
     event.preventDefault();
     $(this.firstChild).addClass("hide"); //remove spoiler
     $(this.lastChild).removeClass("hide"); //show results
 });
 
-function buildHTML(i, match) {
-    var htmlListObject = '<tr id="' + i + '" class="eetrow ';
+var getCSEvents = $.ajax({
+    url: eet.config.urls.csgo.upc,
+    type: "GET",
+    async: true,
+    dataType: "",
+    success: function (data) {
+        var htmlMatches = "";
+        var $foo = $(data);
+        $foo.find(".col-xs-12.col-lg-7").filter(function() { //hopefully exist only 1 time?!
+            var matches = $(this).find(".col-xs-12.col-md-6");
+            $.each(matches, function(i, html) {
+                var match = {};
+                match.gameType = "csgo";
+                //match.time = $(this).find(".badge").text();
+                match.isLive = $(this).find(".pull-right.label-success").length >= 1 ? true : false; //only exist if match is live
+                match.url = "http://www.hltv.org"+$(this).find("a").attr("href");
+                match.id = match.url.hashCode();
 
-    if (match.time != "") {
-        htmlListObject += 'eventSoon" href="#">' +
-            '<td>' + match.time + '</td></td>';
+                var gameInfoDiv =$(this).find("a").find("div");
+                match.team1name = $(gameInfoDiv[0]).text();
+                match.team1flag = $(gameInfoDiv[0]).find("img").attr("src");
+                match.team2name = $(gameInfoDiv[1]).text();
+                match.team2flag = $(gameInfoDiv[1]).find("img").attr("src");
+               // match.coverage = $(gameInfoDiv[2]).text();
+               // match.map =  $(gameInfoDiv[3]).text();
+
+
+                if (match.isLive) {
+                    htmlMatches += $.tmpl(eet.templates.csgo.live, match);
+                }
+                else {
+                    match.timeToLive = $(this).find(".descriptiontext").text(); //only exist if event is not live
+                    match.timestamp =  Math.round(strtotime("+ "+match.timeToLive.replace('h,', ' hours').replace('m', ' minutes').replace("\n", "")));
+                    eet.matches.all[match.id] = match;
+                    htmlMatches += $.tmpl(eet.templates.csgo.soon, match);
+                    sendMessageToBackground(match);
+                }
+            });
+            $('#tbody_csgo_upcMatches').html(htmlMatches);
+        });
     }
-    else if (match.live != "") {
-        htmlListObject += 'eventLive" href="#">' +
-            '<td><strong>' + match.live + '</strong></td>';
-    }
+});
 
-    else if (match.result != "") {
-        htmlListObject += 'eventDone"><td><span class="spoilerAlert"><a class="spoiler" href="#">Score</a><span class="result hide">' + match.result + '</span></span></td>';
-        //<span class='spoilerAlert'><a href='#' onclick='showSpoiler("+i+")'>Score</a></span><span class='result hide'>"+match.result+"</span>
-    }
+var getDotaEvents = $.ajax({
+        url: eet.config.urls.dota2,
+        type: "GET",
+        async: true,
+        dataType: "",
+        success: function (data) {
+            var htmlLiveMatches = "", htmlUpcMatches="", htmlResultMatches="", htmlMatches = "";
+            var $html = data.replace(/src/g, 'data-src');
 
-    htmlListObject += '<td>' + match.t1 + '</td><td>vs.</td><td>' + match.t2 + '</td><td><a id="test' + i + '" href="javascript:onclick(test(' + i + '))" ><span class="reminder glyphicon glyphicon-bell"></span></a></tr>';
+            var categories = $($html).find("table.matches").length;
+            if (categories === 3) {
+                htmlLiveMatches = $($html).find("table.matches").eq(0);
+                htmlUpcMatches = $($html).find("table.matches").eq(1);
+                htmlResultMatches = $($html).find("table.matches").eq(2);
+            }
+            else if (categories === 2) {
+                htmlUpcMatches = $($html).find("table.matches").eq(0);
+                htmlResultMatches = $($html).find("table.matches").eq(1);
+            }
+            else {
+                htmlResultMatches = $($html).find("table.matches").eq(0);
+            }
 
-    return htmlListObject;
-}
-
-function addJsonResultsToListview() {
-    var htmlListObject = {
-        // csgo:   {upc:"", res:""},
-        dota2: {upc: "", res: ""},
-        lol: {upc: "", res: ""},
-        sc2: {upc: "", res: ""},
-        hs: {upc: "", res: ""},
-        wc3: {upc: "", res: ""}
-    };
-    var badgeNumbers = {
-        //csgo:   {upc:0, res:0},
-        dota2: {upc: 0, res: 0},
-        lol: {upc: 0, res: 0},
-        sc2: {upc: 0, res: 0},
-        hs: {upc: 0, res: 0},
-        wc3: {upc: 0, res: 0}
-    };
-
-    $.each(jsonMatches.matches, function (i, match) {
-        if (match.result != "") {
-            htmlListObject[match.gameType].res = buildHTML(i, match) + htmlListObject[match.gameType].res;
-            badgeNumbers[match.gameType].res += 1;
-        } else {
-            htmlListObject[match.gameType].upc = buildHTML(i, match) + htmlListObject[match.gameType].upc;
-            badgeNumbers[match.gameType].upc += 1;
+            //-------------start scraping-------------
+            liveUpcCounter = 0;
+            htmlMatches += getGosuLive(htmlLiveMatches, "dota2");
+            htmlMatches += getGosuUpc(htmlUpcMatches, "dota2");
+            if (htmlMatches === "") {
+                $('#tbody_dota2_upcMatches').html($.tmpl(eet.templates.no_matches, {gameType:"dota2"}));
+            }
+            else {
+                $('#tbody_dota2_upcMatches').html(htmlMatches);
+            }
+            getGosuResults(htmlResultMatches, "dota2");
         }
     });
 
-    $.each(badgeNumbers, function (gameType, obj) {
-        $.each(obj, function (subType, number) {
-            if (number === 0) {
-                htmlListObject[gameType][subType] = '<tr class="eetrow centerText"><td><span class="glyphicon glyphicon-warning-sign left">' +
-                    '</span> no matches found<span class="glyphicon glyphicon-warning-sign right"></span></td></tr>';
+var getHearthstoneEvents = $.ajax({
+        url: eet.config.urls.hs,
+        type: "GET",
+        async: true,
+        dataType: "",
+        success: function (data) {
+            var htmlLiveMatches = "", htmlUpcMatches="", htmlResultMatches="", htmlMatches = "";
+            var $html = data.replace(/src/g, 'data-src');
+
+            var categories = $($html).find("table.matches").length;
+            if (categories === 3) {
+             htmlLiveMatches = $($html).find("table.matches").eq(0);
+             htmlUpcMatches = $($html).find("table.matches").eq(1);
+             htmlResultMatches = $($html).find("table.matches").eq(2);
             }
-        })
+            else if (categories === 2) { //doenst work if there are live matches and no upc matches
+                htmlUpcMatches = $($html).find("table.matches").eq(0);
+                htmlResultMatches = $($html).find("table.matches").eq(1);
+            }
+            else {
+                htmlResultMatches = $($html).find("table.matches").eq(0);
+            }
 
-        $('#tbody_' + gameType + '_upcMatches').html(htmlListObject[gameType].upc);
-        $('#tbody_' + gameType + '_results').html(htmlListObject[gameType].res);
+        //-------------start scraping-------------
+            liveUpcCounter = 0;
+            htmlMatches += getGosuLive(htmlLiveMatches, "hs");
+            htmlMatches += getGosuUpc(htmlUpcMatches, "hs");
+            if (htmlMatches === "") {
+                $('#tbody_hs_upcMatches').html($.tmpl(eet.templates.no_matches, {gameType:"hs"}));
+            }
+            else {
+                $('#tbody_hs_upcMatches').html(htmlMatches);
+            }
+            getGosuResults(htmlResultMatches, "hs");
+        }
     });
 
-    $.each(badgeNumbers, function (gameType, resObj) {
-        $("#badge_" + gameType + "_results").html(resObj.res === 0 ? "" : resObj.res);
-        $("#badge_" + gameType + "_upc").html(resObj.upc === 0 ? "" : resObj.upc);
+var getLeagueOfLegendsEvents = $.ajax({
+        url: eet.config.urls.lol,
+        type: "GET",
+        async: true,
+        dataType: "",
+        success: function (data) {
+            var htmlLiveMatches = "", htmlUpcMatches="", htmlResultMatches="", htmlMatches = "";
+            var $html = data.replace(/src/g, 'data-src');
+
+            var categories = $($html).find("table.matches").length;
+            if (categories === 3) {
+                htmlLiveMatches = $($html).find("table.matches").eq(0);
+                htmlUpcMatches = $($html).find("table.matches").eq(1);
+                htmlResultMatches = $($html).find("table.matches").eq(2);
+            }
+            else if (categories === 2) {
+                htmlUpcMatches = $($html).find("table.matches").eq(0);
+                htmlResultMatches = $($html).find("table.matches").eq(1);
+            }
+            else {
+                htmlResultMatches = $($html).find("table.matches").eq(0);
+            }
+
+            //-------------start scraping-------------
+            liveUpcCounter = 0;
+            htmlMatches += getGosuLive(htmlLiveMatches, "lol");
+            htmlMatches += getGosuUpc(htmlUpcMatches, "lol");
+            if (htmlMatches === "") {
+                $('#tbody_lol_upcMatches').html($.tmpl(eet.templates.no_matches, {gameType:"lol"}));
+            }
+            else {
+                $('#tbody_lol_upcMatches').html(htmlMatches);
+            }
+            getGosuResults(htmlResultMatches, "lol");
+        }
     });
 
-    setResultsSpoiler(isSpoilerOn);
+var getStarcraftEvents = $.ajax({
+        url: eet.config.urls.sc2,
+        type: "GET",
+        async: true,
+        dataType: "",
+        success: function (data) {
+            var htmlLiveMatches = "", htmlUpcMatches="", htmlResultMatches="", htmlMatches = "";
+            var $html = data.replace(/src/g, 'data-src');
+
+            var categories = $($html).find("table.matches").length;
+            if (categories === 3) {
+                htmlLiveMatches = $($html).find("table.matches").eq(0);
+                htmlUpcMatches = $($html).find("table.matches").eq(1);
+                htmlResultMatches = $($html).find("table.matches").eq(2);
+            }
+            else if (categories === 2) {
+                htmlUpcMatches = $($html).find("table.matches").eq(0);
+                htmlResultMatches = $($html).find("table.matches").eq(1);
+            }
+            else {
+                htmlResultMatches = $($html).find("table.matches").eq(0);
+            }
+
+            //-------------start scraping-------------
+            liveUpcCounter = 0;
+            htmlMatches += getGosuLive(htmlLiveMatches, "sc2");
+            htmlMatches += getGosuUpc(htmlUpcMatches, "sc2");
+            if (htmlMatches === "") {
+                $('#tbody_sc2_upcMatches').html($.tmpl(eet.templates.no_matches, {gameType:"sc2"}));
+            }
+            else {
+                $('#tbody_sc2_upcMatches').html(htmlMatches);
+            }
+            getGosuResults(htmlResultMatches, "sc2");
+        }
+    });
+
+var liveUpcCounter = 0;
+
+function getGosuLive(html, gameType) {
+    var htmlMatches = "";
+    $(html).find("tr").filter(function () {
+        liveUpcCounter++;
+        var match = {};
+        match.gameType = gameType;
+
+
+        var team1 = $(this).find(".opp1");
+        match.team1name = team1.text();
+        match.team1flag = team1.children().last().attr('class');
+
+        var team2 = $(this).find(".opp2");
+        match.team2name = team2.text();
+        match.team2flag = team2.children().first().attr('class');
+
+        match.url = "http://www.gosugamers.net"+$(this).find("a").first().attr('href');
+        match.id = match.url.hashCode();
+
+        //-------- get deeper information ------
+        match.timestamp = null;
+        match.time = null;
+        match.date = null; //not necessarry
+        match.coverage = null;
+        //match.bestOf = null; //check dota extension
+
+        htmlMatches += $.tmpl(eet.templates[gameType].live, match);
+
+
+    });
+    return htmlMatches;
+}
+
+function getGosuUpc(html, gameType) {
+    var htmlMatches = "";
+    $(html).find("tr").filter(function () {
+        if (liveUpcCounter < 15) {
+            liveUpcCounter++;
+            var match = {};
+            match.gameType = gameType;
+            match.timeToLive = $(this).find(".type-specific").text();
+
+            var team1 = $(this).find(".opp1");
+            match.team1name = team1.text();
+            match.team1flag = team1.children().last().attr('class');
+
+            var team2 = $(this).find(".opp2");
+            match.team2name = team2.text();
+            match.team2flag = team2.children().first().attr('class');
+
+            match.url = "http://www.gosugamers.net"+$(this).find("a").first().attr('href');
+            match.id = match.url.hashCode();
+            match.timestamp =  Math.round(strtotime("+ "+match.timeToLive.replace('h', ' hours').replace('m', ' minutes').replace('d', ' days').replace("\n", "")));
+
+            //-------- get deeper information ------ todo:you only need to do that if you have tooltips enabled
+            match.date = null;
+            match.time = null;
+            match.coverage = null;
+            match.bestOf = null;
+
+            htmlMatches += $.tmpl(eet.templates[gameType].soon, match);
+
+            eet.matches.all[match.id] = match;
+
+            sendMessageToBackground(match);
+        }
+    });
+    return htmlMatches;
+}
+
+function getGosuResults(html, gameType){
+    var winners = [], htmlResult = "";
+    var counter = 0;
+    $(html).find("tr").filter(function () {
+        if (counter < 15) {
+            counter++;
+            var match = {};
+            match.gameType = gameType;
+
+            var team1 = $(this).find(".opp1");
+            match.team1name = team1.text();
+            match.team1flag = team1.children().last().attr('class');
+
+            var team2 = $(this).find(".opp2");
+            match.team2name = team2.text();
+            match.team2flag = team2.children().first().attr('class');
+
+            match.url = "http://www.gosugamers.net"+$(this).find("a").first().attr('href');
+            match.id = match.url.hashCode();
+
+            match.team1result = $(this).find(".hscore").text();
+            match.team2result = $(this).find(".ascore").text();
+            match.winner = parseInt(match.team1result) > parseInt(match.team2result) ? "team1" : "team2";
+            match.loser = parseInt(match.team2result) > parseInt(match.team1result) ? "team1" : "team2";
+
+            htmlResult += $.tmpl(eet.templates[gameType].done, match);
+
+            if (match.winner !== match.loser) {
+                winners.push({id:match.id, class: match.winner});
+            }
+        }
+    });
+
+    $("#tbody_"+gameType+"_results").html(htmlResult);
+
+    $.each(winners, function(i, v) {
+        $("#"+ v.id+" ."+ v.class).addClass("winnerTeam");
+    });
+}
+
+
+
+function sendMessageToBackground(obj, showNotification) {
+    showNotification = showNotification || false; //todo:replace 'false' with global notification from localstorage
+    var foo = {
+        showNotification: showNotification,
+        match: obj
+    }
+    chrome.runtime.sendMessage(foo, function(response) {
+        console.log(response.success);
+    });
 }
 
 /* readmore  */
@@ -254,7 +507,7 @@ function getEvents() {
                     if (i != matches.length - 1) { //don't scrape the last element (Datum:gestern - heute - morgen...)
                         var match = $(this).children();
                         var gameType = match.first().attr('class').split(" ")[0]
-                        if (gameType == "sc" || gameType == "csgo") // don't collect games of old starcraft
+                        if (gameType == "sc" || gameType == "csgo" || gameType=="soccer") // don't collect games of old starcraft
                             return; //continue
                         var t1 = $(match[0]).text();
                         var t2 = $(match[2]).text();
@@ -292,13 +545,17 @@ function getEvents() {
     });
 }
 
-/*todo:if results == null*/
-var loadHLTVMatches = $.ajax({
+/*var loadHLTVMatches = $.ajax({
     url: "http://josef.virtual-artz.de/api/matches/hltv/v100/api.json",
     success: function (data) {
         var upc_matches, res_matches, foo;
+
+        if (data["soon"] === null && data["live"] === null) {
+            upc_matches = eet.templates.no_matches;
+        }
+
         csgo_winner = [];
-        $.each(data, function (key, match) {
+        $.each(data, function (key, match) { //key: done,soon,live
             if (key === "done") {
                 $.each(match, function (i, gameInfo) {
                     if (gameInfo["winnerTeam"] !== gameInfo["loserTeam"]) {
@@ -309,28 +566,29 @@ var loadHLTVMatches = $.ajax({
                     res_matches += $.tmpl(eet.templates.csgo_done, gameInfo);
                 });
             }
-            else {
-                $.each(match, function (i, gameInfo) {
-                    if (gameInfo["isLive"]) {
-                        console.log("game is live");
-                        upc_matches += $.tmpl(eet.templates.csgo_live, gameInfo);
-                    }
-                    else {
-                        console.log("game upcoming but not live");
-                        console.log(gameInfo);
-                        upc_matches += $.tmpl(eet.templates.csgo_soon, gameInfo);
-                    }
-                });
+            else { // live and soon
+                if (match !== null) {
+                    $.each(match, function (i, gameInfo) {
+                        eet.matches.csgo[gameInfo["id"]] = gameInfo;
+                        if (gameInfo["isLive"]) {
+                            console.log("game is live");
+                            upc_matches += $.tmpl(eet.templates.csgo_live, gameInfo);
+                        }
+                        else {
+                            upc_matches += $.tmpl(eet.templates.csgo_soon, gameInfo);
+                        }
+                    });
+                }
             }
         });
         $('#tbody_csgo_upcMatches').html(upc_matches);
         $('#tbody_csgo_results').html(res_matches);
-
+        console.log(eet.matches.csgo);
         $.each(csgo_winner, function(i, winner){
            $("#"+winner.id+" ."+winner.class).addClass("winnerTeam");
         });
     }
-});
+});*/
 
 var loadCsgoVods = $.ajax({
    url: "http://josef.virtual-artz.de/api/vods/csgo/v100/api.json",
@@ -351,41 +609,58 @@ var loadCsgoVods = $.ajax({
     }
 });
 
+$("#ex6").slider();
+$("#ex6").on('slide', function(slideEvt) {
+    $("#ex6SliderVal").text(slideEvt.value);
+});
+
 document.addEventListener('DOMContentLoaded', function () {
-    var cTime = new Date($.now());
-    $("#currentTime").html(cTime);
-
     eet.init();
-    getEvents();
+   // getEvents();
 
-    $.when(loadHLTVMatches, loadCsgoVods).done(function () {
+    $.when(loadCsgoVods, getCSEvents, getStarcraftEvents, getDotaEvents, getHearthstoneEvents, getLeagueOfLegendsEvents).done(function () {
         console.log("loading finished");
-        setResultsSpoiler();
+        setResultsSpoiler(isSpoilerOn);
 
         if (!isTooltipOn) {
             $('[data-toggle="tooltip"]').tooltip('disable');
         }
 
-        $('[data-toggle="popover"]').popover({
+    /*    $('[data-toggle="popover"]').popover({
             html: "true",
             placement: "left",
             trigger: 'click'
-        })
+        })*/
 
         $('body').on('click', '.myHref', function (e) {
             e.stopPropagation();
             var url = $(this).attr('href');
             window.open(url);
         });
+
+        /*todo:change icon to remove notification and so on*/
+        $('body').on('click', '.notificationHref', function (e) {
+            e.stopPropagation();
+            var id = $(this).data("id");
+
+            var notifyObj = {
+                    showNotification: true,
+                    match: eet.matches.all[id]
+            };
+
+            chrome.runtime.sendMessage(notifyObj, function(response) {
+                console.log(response.success);
+            });
+        });
     });
 
-    $(".my-popover").attr({"data-toggle": "popover", "data-container": "body", "data-placement": "bottom", "data-content": "My popover content", "data-original-title": "Popover title"});
-    $("[data-toggle=popover]").popover();
+
 
 
 });
 
-
+//$(".my-popover").attr({"data-toggle": "popover", "data-container": "body", "data-placement": "bottom", "data-content": "My popover content", "data-original-title": "Popover title"});
+//$("[data-toggle=popover]").popover();
 $("body").tooltip({ selector: '[data-toggle="tooltip"]', html: true });
 
 
@@ -394,4 +669,15 @@ var trimAfter = function (text, n) {
     if (text.length > n + 2)
         short = text.substr(0, n) + "..";
     return short;
+};
+
+String.prototype.hashCode = function() {
+    var hash = 0, i, chr, len;
+    if (this.length == 0) return hash;
+    for (i = 0, len = this.length; i < len; i++) {
+        chr   = this.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
 };

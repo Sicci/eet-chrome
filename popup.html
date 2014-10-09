@@ -9,10 +9,12 @@
     <!-- Stylesheets -->
     <!--<link href="css/bootstrap.min.theme.simplex.css" rel="stylesheet">-->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/slider.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
+    <link href="css/flags.css" rel="stylesheet">
 
   </head>
-  <body style="min-width:400px;">
+  <body style="min-width:450px;">
   <div class="tabbable tabs-top">
       <ul id="menu" class="nav nav-tabs">
           <!--<li><a class="menutab" id="nav_home" href="#home">home</a></li>-->
@@ -207,7 +209,93 @@
       </div>
 
       <!-- =========== Settings ============ -->
-      <div class="tab-pane alignborder" id="settings">
+
+      <div class="panel-group tab-pane" id="settings">
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                  <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                          Settings
+                      </a>
+                  </h4>
+              </div>
+              <div id="collapseOne" class="panel-collapse collapse in">
+                  <div class="panel-body">
+                      <table id="settingsList" class="table table-hover table-condensed">
+                          <tbody id="tbody_settings">
+                          <tr>
+                              <td class="">Tooltips</td>
+                              <td><div class="btn-group btn-group-sm" data-toggle="buttons">
+                                  <label id="tooltipLabelTrue" class="btn btn-primary">
+                                      <input type="radio" name="options" id="tooltipTrue" class="tooltipsettings" data-tooltip="true"> Enable
+                                  </label>
+                                  <label id="tooltipLabelFalse" class="btn btn-primary">
+                                      <input type="radio" name="options" id="tooltipFalse" class="tooltipsettings" data-tooltip="false"> Disable
+                                  </label>
+                              </div>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td>Spoiler Mode</td>
+                              <td>
+                                  <div class="btn-group btn-group-sm" data-toggle="buttons">
+                                      <label id="spoilerLabelTrue" class="btn btn-primary">
+                                          <input type="radio" name="options" id="spoilerTrue" class="spoilersettings" data-isspoiler="true"> Show Results
+                                      </label>
+                                      <label id="spoilerLabelFalse" class="btn btn-primary">
+                                          <input type="radio" name="options" id="spoilerFalse" class="spoilersettings" data-isspoiler="false"> Hide Results
+                                      </label>
+                                  </div>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td>Notifications</td>
+                              <td>
+                                  <input id="ex6" type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="3"/&t
+                                  <span id="ex6CurrentSliderValLabel">Current Slider Value: <span id="ex6SliderVal">3</span></span>
+                              </td>
+                          </tr>
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                  <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                          FAQ
+                      </a>
+                  </h4>
+              </div>
+              <div id="collapseTwo" class="panel-collapse collapse">
+                  <div class="panel-body">
+                     <dl>
+                         <dt>What sources are used to collect the information?</dt>
+                         <dd>Currently did we use HLTV.org for CS:GO and gosugamers.net for Dota2, SC2, LoL and HS.</dd>
+                     </dl>
+                  </div>
+              </div>
+          </div>
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                  <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                          About us
+                      </a>
+                  </h4>
+              </div>
+              <div id="collapseThree" class="panel-collapse collapse">
+                  <div class="panel-body">
+                      Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                  </div>
+              </div>
+          </div>
+      </div>
+
+
+
+  <!--    <div class="tab-pane alignborder" id="settings">
           <ul class="nav nav-tabs">
               <li class="active"><a class="submenu sub-tabs-top ph-tabstop ph-tableft" href="#sub_settings" data-toggle="tab">Settings</a></li>
           </ul>
@@ -240,16 +328,26 @@
                               </div>
                           </td>
                       </tr>
+                       <tr>
+                           <td>Notifications</td>
+                           <td>
+                               <input id="ex6" type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="3"/&t
+                               <span id="ex6CurrentSliderValLabel">Current Slider Value: <span id="ex6SliderVal">3</span></span>
+                           </td>
+                       </tr>
                       </tbody>
                   </table>
               </div>
-          </div>
+          </div>-->
       </div>
   </div>
 
   <script src="js/vendor/jquery.min.js"></script>
   <script src="js/vendor/jquery.template.js"></script>
   <script src="js/vendor/bootstrap.min.js"></script>
+  <script src="js/vendor/bootstrap-slider.js"></script>
+  <script src="js/vendor/notify.min.js"></script>
+  <script src="js/vendor/strtotime.js"></script>
   <script src="js/vendor/moment.min.js"></script>
   <script src="js/popup.js"></script>
   </body>

@@ -13,3 +13,7 @@ v.1.4
 - build html now on client side with templates
 - changed server side api
 - changed manifest (no more option and background page)
+
+v.1.5
+=====
+working notification system added (for csgo)

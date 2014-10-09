@@ -7,6 +7,7 @@
 .iconWc3 {   background: url("../images/gameIcons16.png") -80px;    width: 16px; height: 16px;}
 .iconHltv {  background: url("../images/hltv.png"); display: block; width:35px; height: 20px;}
 .iconEsltv {  background: url("../images/esltv.png"); display: block; width:35px; height: 20px;}
+.iconGosu {  background: url("../images/gosu_small.png"); display: block; width:23px; height: 20px;}
 
 .flag {
     width: 14px;
@@ -81,6 +82,15 @@ body {
     height: 11px;
     margin: 10px auto;
     margin-bottom:10px;
+}
+
+
+#ex1Slider .slider-selection {
+    background: #BABABA;
+}
+
+.myHref tr {
+    cursor:pointer;
 }
 
 /*========================= from dota match ticker  ========================*/

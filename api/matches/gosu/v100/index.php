@@ -24,9 +24,7 @@ if ($done) {
 //started
 if ($live) {
     $started = $matchList->find('.matches', $d0);
-    $id = 0;
     foreach($started->find('tr') as $aGame) {
-        $id++;
         $gameType = "dota2";
         $img1 = "http://www.gosugamers.net".$aGame->find('span[class*="flag"]', 0)->class;
         $team1 =  trim($aGame->find('.opp1', 0)->plaintext);
@@ -36,6 +34,7 @@ if ($live) {
         $img2  = "http://www.gosugamers.net".$aGame->find('span[class*="flag"]', 1)->class;
         $team2 =  trim($aGame->find('.opp2', 0)->plaintext);
         $linkID = "http://www.gosugamers.net".$aGame->find('a', 0)->href;
+        $id = hash("adler32",$linkID);
 
         $html = file_get_contents($linkID);
         $titleList->load($html);
@@ -53,10 +52,8 @@ if ($live) {
     }
 }
 //upcoming
-$id = 0;
 $upcoming = $matchList->find('.matches', $d1);
 foreach($upcoming->find('tr') as $aGame) {
-    $id++;
     $gameType = "dota2";
     $img1 = "http://www.gosugamers.net".$aGame->find('span[class*="flag"]', 0)->class;
     $team1 =  trim($aGame->find('.opp1', 0)->plaintext);
@@ -66,6 +63,7 @@ foreach($upcoming->find('tr') as $aGame) {
     $img2  = "http://www.gosugamers.net".$aGame->find('span[class*="flag"]', 1)->class;
     $team2 =  trim($aGame->find('.opp2', 0)->plaintext);
     $linkID = "http://www.gosugamers.net".$aGame->find('a', 0)->href;
+    $id = hash("adler32",$linkID);
     $date = trim($aGame->find('.live-in', 0)->plaintext);
 
     $html = file_get_contents($linkID);
@@ -83,10 +81,8 @@ foreach($upcoming->find('tr') as $aGame) {
 }
 
 //done
-$id=0;
 $done = $matchList->find('.matches', $d2);
 foreach($done->find('tr') as $aGame) {
-    $id++;
     $gameType = "dota2";
     $img1 = "http://www.gosugamers.net".$aGame->find('span[class*="flag"]', 0)->class;
     $team1 =  trim($aGame->find('.opp1', 0)->plaintext);
@@ -96,6 +92,7 @@ foreach($done->find('tr') as $aGame) {
     $img2  = "http://www.gosugamers.net".$aGame->find('span[class*="flag"]', 1)->class;
     $team2 =  trim($aGame->find('.opp2', 0)->plaintext);
     $linkID = "http://www.gosugamers.net".$aGame->find('a', 0)->href;
+    $id = hash("adler32",$linkID);
 
     $html = file_get_contents($linkID);
     $titleList->load($html);

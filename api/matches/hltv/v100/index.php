@@ -7,6 +7,9 @@ $resultList = new simple_html_dom();
 $matchList->load($html_upc);
 $resultList->load($html_res);
 $output = array();
+$output["live"] = null;
+$output["soon"] = null;
+
 putenv('GDFONTPATH=' . realpath('.'));
 $font = "DroidSans";
 function trim_by_width($text,$width,$font_file,$font_size=7,$append_string = '...')
@@ -33,10 +36,11 @@ function trim_by_width($text,$width,$font_file,$font_size=7,$append_string = '..
     return $text;
 }
 
-$i = 0;
+$old = array("h, ", "m");
+$new = array(" hours ", " minutes");
+
 foreach ($matchList->find('div[class*="col-xs-12 col-lg-7"]') as $matches){
     foreach($matches->find('div[class*="col-xs-12 col-md-6"]') as $match) {
-        $i++;
         $gameType = "csgo";
         $time = $match->find('.badge', 0)->plaintext;
 
@@ -46,10 +50,14 @@ foreach ($matchList->find('div[class*="col-xs-12 col-lg-7"]') as $matches){
             $isLive = true;
         }
         else {
-            $timeFromNow = $match->find('small', 0)->plaintext;
+           $timeFromNow = $match->find('small', 0)->plaintext;
+		   $foo = str_replace($old, $new, $timeFromNow);
+		   $timestamp = strtotime("+ ".$foo);
+            echo $timestamp."<br>";
         }
 
         $url = "http://www.hltv.org{$match->find('a', 0)->href}";
+        $id = hash("adler32",$url);
         $team1name = $match->find('a div',0)->plaintext;
         $team1flag = $match->find('a img',0)->src;
         $team2name = $match->find('a div',1)->plaintext;
@@ -58,20 +66,19 @@ foreach ($matchList->find('div[class*="col-xs-12 col-lg-7"]') as $matches){
         $map = $match->find('a div',3)->plaintext;
 
         if ($isLive) { //game is live
-            $output["live"][] = array("gameType"=>$gameType, "id"=>$i,"time"=>$time,"isLive"=>$isLive, "timeFromNow"=>$timeFromNow, "url"=>$url, "team1name"=>$team1name, "team1flag"=>$team1flag, "team2name"=>$team2name, "team2flag"=>$team2flag, "coverage"=>$coverage, "map"=>$map);
+            $output["live"][] = array("gameType"=>$gameType, "id"=>$id,"time"=>$time,"isLive"=>$isLive, "timeFromNow"=>$timeFromNow, "url"=>$url, "team1name"=>$team1name, "team1flag"=>$team1flag, "team2name"=>$team2name, "team2flag"=>$team2flag, "coverage"=>$coverage, "map"=>$map);
         } else { //game is upcoming
-            $output["soon"][] = array("gameType"=>$gameType, "id"=>$i,"time"=>$time,"isLive"=>$isLive, "timeFromNow"=>$timeFromNow, "url"=>$url, "team1name"=>$team1name, "team1flag"=>$team1flag, "team2name"=>$team2name, "team2flag"=>$team2flag, "coverage"=>$coverage, "map"=>$map);
+            $output["soon"][] = array("gameType"=>$gameType, "id"=>$id,"time"=>$time, "timestamp"=>$timestamp,"isLive"=>$isLive, "timeFromNow"=>$timeFromNow, "url"=>$url, "team1name"=>$team1name, "team1flag"=>$team1flag, "team2name"=>$team2name, "team2flag"=>$team2flag, "coverage"=>$coverage, "map"=>$map);
         }
     }
 }
 
-$j = 0;
 foreach($resultList->find('div[class*="row col-lg-12"] div[class="panel panel-default"]') as $matches) {
     $date = $matches->find('.panel-title',0)->plaintext;
     foreach($matches->find('div[class*="col-lg-12 col-md-12 col-xs-12"]') as $match) {
-        $j++;
         $gameType = "csgo";
         $url = "http://www.hltv.org{$match->find('a',0)->href}";
+        $id = hash("adler32",$url);
         $team1 = $match->find('a div', 0)->plaintext;
         $team2 = $match->find('a div', 1)->plaintext;
         $team1name = substr($team1,0,strrpos($team1, ' ',-2));
@@ -89,18 +96,16 @@ foreach($resultList->find('div[class*="row col-lg-12"] div[class="panel panel-de
         //$team1name = trim_by_width("{$team1name}",78,$font,8);
         //$team2name = trim_by_width("{$team2name}",78,$font,8);
 
-        $output["done"][] = array("gameType"=>$gameType, "id"=>$j, "date"=>$date, "time"=>$time, "url"=>$url, "team1name"=>$team1name, "team1flag"=>$team1flag, "team2name"=>$team2name, "team2flag"=>$team2flag, "coverage"=>$coverage, "map"=>$map, "team1result"=>$team1result, "team2result"=>$team2result, "winnerTeam"=>$winner, "loserTeam"=>$loser);
+        $output["done"][] = array("gameType"=>$gameType, "id"=>$id, "date"=>$date, "url"=>$url, "team1name"=>$team1name, "team1flag"=>$team1flag, "team2name"=>$team2name, "team2flag"=>$team2flag, "coverage"=>$coverage, "map"=>$map, "team1result"=>$team1result, "team2result"=>$team2result, "winnerTeam"=>$winner, "loserTeam"=>$loser);
 
     }
 
 }
 
-//$output = array_merge($output, $finishedList);
 $str = trim(json_encode($output));
 $filestr    = "api.json";
 $fp=@fopen($filestr, 'w');
 fwrite($fp, $str);
-//fwrite($fp, "");
 fclose($fp);
 echo $str;
 ?>

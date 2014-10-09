@@ -2,16 +2,22 @@
   "manifest_version": 2,
 
   "name": "eSportsTicker",
-  "description": "This extension shows all current and upcomming eSport events for the games Dota 2, CS:GO, Warcraft 3, Starcraft 2 and Hearthstone.",
+  "description": "This extension shows all current and upcoming eSport events for the games Dota 2, CS:GO, Warcraft 3, Starcraft 2 and Hearthstone.",
   "version": "1.4",
-    "icons": {"128":"icon.png"},
+    "icons": {"128":"/icons/testbig.png"},
   "permissions": [
-	"http://www.readmore.de/",
+      "http://www.readmore.de/",
+      "http://www.gosugamers.net/*",
+      "http://www.hltv.org/*",
       "http://josef.virtual-artz.de/*",
-      "storage"
+      "storage",
+      "notifications"
   ],
   "browser_action": {
-    "default_icon": "icon.png",
+    "default_icon": "/icons/test3.png",
     "default_popup": "popup.html"
-  }
+  },
+    "background" : {
+        "page": "background.html"
+    }
 }
